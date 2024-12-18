@@ -1,57 +1,40 @@
-import {router, Stack, useGlobalSearchParams} from "expo-router";
-import { useState, useEffect } from "react";
-import {Alert, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
+import { useState } from "react";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from "react-native";
+import { useRouter } from "expo-router";
+import useCollection from "../../firebase/hooks/useCollection";
+import Fragrance from "../../types/Fragrance";
 
-import useDocument from "../../../firebase/hooks/useDocument";
-import globalStyles from "../../../styles/globalStyles";
-import Fragrance from "../../../types/Fragrance";
-
-export default function UpdateFragrance() {
-    const { id } = useGlobalSearchParams();
-    const { data: fragrance, loading, upsert } = useDocument<Fragrance>("fragrances", id as string);
-
+export default function Create() {
     const [name, setName] = useState("");
     const [brand, setBrand] = useState("");
     const [quantity, setQuantity] = useState("");
     const [description, setDescription] = useState("");
+    const { create } = useCollection<Fragrance>("fragrances");
+    const router = useRouter();
 
-    useEffect(() => {
-        if (fragrance) {
-            setName(fragrance.name || "");
-            setBrand(fragrance.brand || "");
-            setQuantity(fragrance.quantity?.toString() || "");
-            setDescription(fragrance.description || "");
-        }
-    }, [fragrance]);
-
-    const handleUpdate = async () => {
+    const handleSubmit = async () => {
         if (!name || !brand || !quantity || !description) {
             Alert.alert("Error", "Please fill all fields");
             return;
         }
 
         try {
-            await upsert({
+            await create({
                 name,
                 brand,
                 quantity: parseInt(quantity, 10),
                 description,
             });
-            Alert.alert("Success", "Fragrance updated!");
-            router.replace("/home");
+            Alert.alert("Success", "Fragrance created!");
+            router.push("/home");
         } catch (error: any) {
             Alert.alert("Error", error.message || "Something went wrong");
         }
     };
 
-    if (loading) return <Text>Loading...</Text>;
-
     return (
         <View style={styles.container}>
-            <Stack.Screen options={{ title: "Update Fragrance" }} />
-
-            <Text style={styles.title}>Update Fragrance</Text>
-
+            <Text style={styles.title}>Register New Fragrance</Text>
             <View>
                 <Text>Name:</Text>
                 <TextInput
@@ -61,7 +44,6 @@ export default function UpdateFragrance() {
                     onChangeText={setName}
                 />
             </View>
-
             <View>
                 <Text>Brand:</Text>
                 <TextInput
@@ -71,7 +53,6 @@ export default function UpdateFragrance() {
                     onChangeText={setBrand}
                 />
             </View>
-
             <View>
                 <Text>Quantity:</Text>
                 <TextInput
@@ -82,21 +63,19 @@ export default function UpdateFragrance() {
                     onChangeText={setQuantity}
                 />
             </View>
-
             <View>
-                <Text>Description:</Text>
+                <Text>Notes:</Text>
                 <TextInput
                     multiline
                     style={styles.input}
-                    placeholder="Fragrance Description"
+                    placeholder="Fragrance Notes"
                     value={description}
                     onChangeText={setDescription}
                 />
             </View>
-
             <View>
-                <TouchableOpacity style={styles.submit} onPress={handleUpdate}>
-                    <Text style={styles.submitText}>Update</Text>
+                <TouchableOpacity style={styles.submit} onPress={handleSubmit}>
+                    <Text style={styles.submitText}>Submit</Text>
                 </TouchableOpacity>
             </View>
         </View>

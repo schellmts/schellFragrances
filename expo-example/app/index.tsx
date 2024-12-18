@@ -11,7 +11,7 @@ export default function _screen() {
   const { user, login, loading } = useAuth();
   const router = useRouter();
 
-  const [email, setEmail] = useState("user@example.com");
+  const [email, setEmail] = useState("matheus@email.com");
   const [password, setPassword] = useState("123456");
 
   useEffect(() => {
@@ -25,10 +25,9 @@ export default function _screen() {
   return (
     <View style={globalStyles.container}>
       <Text style={globalStyles.title}>
-        simple-firestore-hooks expo example
+        Schell Fragrances
       </Text>
-      <Text>Before start: check Readme.md for setup details!</Text>
-      <Text>login with email: user@example.com, password: 123456</Text>
+
 
       <TextInput
         style={globalStyles.input}

@@ -11,6 +11,7 @@ const globalStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 24,
+    backgroundColor: "white",
   },
   title: {
     fontSize: 18,

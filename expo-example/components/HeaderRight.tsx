@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { Alert, Text } from "react-native";
+import {Alert, StyleSheet, Text, TouchableOpacity} from "react-native";
 
 import useAuth from "../firebase/hooks/useAuth";
 import StyledButton from "./StyledButton";
@@ -10,9 +10,8 @@ export default function HeaderRight() {
 
   return (
     <>
-      <Text>{user?.email}</Text>
-      <StyledButton
-        onPress={async () => {
+      <Text style={styles.headerText}>user: {user?.email}</Text>
+      <TouchableOpacity onPress={async () => {
           try {
             await logout();
             router.replace("/");
@@ -20,9 +19,19 @@ export default function HeaderRight() {
             Alert.alert("Logout error", error.toString());
           }
         }}
-        title={"Logout"}
-        style={{ width: "auto", marginLeft: 12 }}
-      />
+
+      >
+          <Text style={styles.logoutbutton}>Logout</Text>
+      </TouchableOpacity>
     </>
   );
 }
+
+const styles = StyleSheet.create({
+    logoutbutton: {
+        color: "red",
+    },
+    headerText: {
+        paddingEnd: 15,
+    }
+})
